@@ -39,7 +39,7 @@ export const insertBetSchema = createInsertSchema(bets).omit({
   cashedOutAt: true,
 });
 
-// Game statistics
+// Game stats
 export const gameStats = pgTable("game_stats", {
   id: serial("id").primaryKey(),
   date: timestamp("date").notNull().defaultNow(),
@@ -53,7 +53,7 @@ export const insertGameStatsSchema = createInsertSchema(gameStats).omit({
   date: true,
 });
 
-// Users for the basic auth
+// Users
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
@@ -94,21 +94,21 @@ export const insertSlotPaylineSchema = createInsertSchema(slotPaylines).omit({
   createdAt: true,
 });
 
-// Types from schemas
-export type InsertUser = z.infer<typeof insertUserSchema>;
+// Export types
 export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
 
-export type InsertGameState = z.infer<typeof insertGameStateSchema>;
 export type GameState = typeof gameStates.$inferSelect;
+export type InsertGameState = typeof gameStates.$inferInsert;
 
-export type InsertBet = z.infer<typeof insertBetSchema>;
 export type Bet = typeof bets.$inferSelect;
+export type InsertBet = typeof bets.$inferInsert;
 
-export type InsertGameStats = z.infer<typeof insertGameStatsSchema>;
 export type GameStats = typeof gameStats.$inferSelect;
+export type InsertGameStats = typeof gameStats.$inferInsert;
 
-export type InsertSlotSymbol = z.infer<typeof insertSlotSymbolSchema>;
 export type SlotSymbol = typeof slotSymbols.$inferSelect;
+export type InsertSlotSymbol = typeof slotSymbols.$inferInsert;
 
-export type InsertSlotPayline = z.infer<typeof insertSlotPaylineSchema>;
 export type SlotPayline = typeof slotPaylines.$inferSelect;
+export type InsertSlotPayline = typeof slotPaylines.$inferInsert;
