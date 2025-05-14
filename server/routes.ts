@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { GameManager } from "./game-manager";
-import { SlotManager } from "./slot-manager";
+import { slotManager } from "./slot-manager"; // use singleton
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // HTTP server for both Express and WebSocket
@@ -22,7 +22,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create game managers
   const gameManager = new GameManager();
-  const slotManager = new SlotManager();
 
   // Add error event handler for the WebSocket server
   wss.on('error', (error) => {

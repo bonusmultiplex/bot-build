@@ -26,7 +26,7 @@ interface SlotResult {
   paylines: number[];
 }
 
-export class SlotManager {
+class SlotManager {
   private clients: Map<string, Client> = new Map();
   private symbols: SlotSymbol[] = [];
   private bets: SlotBet[] = [];
@@ -197,4 +197,6 @@ export class SlotManager {
   }
 }
 
-export const slotManager = new SlotManager();
+// Remove export of SlotManager class and only export the singleton instance
+const slotManagerSingleton = new SlotManager();
+export { slotManagerSingleton as slotManager };
