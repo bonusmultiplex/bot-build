@@ -45,7 +45,7 @@ export const gameStats = pgTable("game_stats", {
   date: timestamp("date").notNull().defaultNow(),
   highestMultiplier: real("highest_multiplier").notNull().default(1),
   averageMultiplier: real("average_multiplier").notNull().default(1),
-  totalGames: serial("total_games").notNull().default(0),
+  totalGames: integer("total_games").notNull().default(0),
 });
 
 export const insertGameStatsSchema = createInsertSchema(gameStats).omit({

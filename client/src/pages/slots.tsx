@@ -1,10 +1,11 @@
 import React from "react";
 import SlotMachine from "@/components/slot-machine";
 import ConnectionStatus from "@/components/connection-status";
+import GameNavigation from "@/components/game-nav";
 import { useWebSocket } from "@/hooks/use-websocket";
 
 export default function SlotsPage() {
-  const { connected } = useWebSocket();
+  const { isConnected } = useWebSocket();
 
   return (
     <div className="container py-8">
@@ -12,8 +13,10 @@ export default function SlotsPage() {
         <h1 className="text-4xl font-bold">
           Casino Slots
         </h1>
-        <ConnectionStatus isConnected={connected} />
+        <ConnectionStatus isConnected={isConnected} />
       </div>
+      
+      <GameNavigation />
       
       <SlotMachine />
     </div>

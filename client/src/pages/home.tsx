@@ -5,6 +5,7 @@ import GameDisplay from "@/components/game-display";
 import BettingPanel from "@/components/betting-panel";
 import GameStatsDisplay from "@/components/game-stats";
 import RecentBets from "@/components/recent-bets";
+import GameNavigation from "@/components/game-nav";
 import { useWebSocket } from "@/hooks/use-websocket";
 import { useGameState } from "@/hooks/use-game-state";
 import { useToast } from "@/hooks/use-toast";
@@ -101,6 +102,7 @@ export default function Home() {
 
       {/* Main content */}
       <main className="container mx-auto px-4 sm:px-6 py-6 flex-grow">
+        <GameNavigation />
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Game Display (3/5 width on large screens, full width on mobile) */}
           <div className="lg:col-span-3 space-y-6">
