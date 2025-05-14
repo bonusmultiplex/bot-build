@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { GameManager } from "./game-manager";
+import { SlotManager } from "./slot-manager";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // HTTP server for both Express and WebSocket
@@ -19,8 +20,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   console.log("WebSocket server initialized on path: /ws");
 
-  // Create game manager
+  // Create game managers
   const gameManager = new GameManager();
+  const slotManager = new SlotManager();
 
   // Add error event handler for the WebSocket server
   wss.on('error', (error) => {
@@ -31,8 +33,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   wss.on('connection', (ws: WebSocket, req) => {
     console.log('Client connected from:', req.socket.remoteAddress);
     
-    // Add client to game manager
+    // Add client to game managers
     const clientId = gameManager.addClient(ws);
+    const slotClientId = slotManager.addClient(ws);
     
     // Send initial game state
     const initialState = gameManager.getGameState();
@@ -87,6 +90,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (data.type === 'place_bet') {
           gameManager.placeBet(clientId, data.amount, data.targetMultiplier);
+        } else if (data.type === 'play_slot') {
+          slotManager.playSlot(slotClientId, data.amount);
+        } else if (data.type === 'get_slot_stats') {
+          const stats = slotManager.getStats();
+          ws.send(JSON.stringify({
+            type: 'slot_stats',
+            stats
+          }));
+        } else if (data.type === 'get_recent_slot_bets') {
+          const bets = slotManager.getRecentBets();
+          ws.send(JSON.stringify({
+            type: 'recent_slot_bets',
+            bets
+          }));
         }
       } catch (err) {
         console.error('Error parsing message:', err);
@@ -97,6 +114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     ws.on('close', () => {
       console.log('Client disconnected');
       gameManager.removeClient(clientId);
+      slotManager.removeClient(slotClientId);
     });
   });
 
