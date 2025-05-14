@@ -1,7 +1,7 @@
 import { WebSocket } from "ws";
 import { storage } from "./storage";
 import { v4 as uuidv4 } from "uuid";
-import { SlotSymbol, Bet } from "@shared/schema";
+import { SlotSymbol } from "@shared/schema";
 import { db } from "./db";
 import { slotSymbols } from "@shared/schema";
 
