@@ -1,4 +1,4 @@
-import { pgTable, text, serial, real, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, real, timestamp, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -65,6 +65,35 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
+// Slot symbols
+export const slotSymbols = pgTable("slot_symbols", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  symbol: text("symbol").notNull(),
+  multiplier: real("multiplier").notNull(),
+  imagePath: text("image_path").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertSlotSymbolSchema = createInsertSchema(slotSymbols).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Slot paylines
+export const slotPaylines = pgTable("slot_paylines", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  positions: integer("positions").array().notNull(),
+  multiplier: real("multiplier").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertSlotPaylineSchema = createInsertSchema(slotPaylines).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types from schemas
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -77,3 +106,9 @@ export type Bet = typeof bets.$inferSelect;
 
 export type InsertGameStats = z.infer<typeof insertGameStatsSchema>;
 export type GameStats = typeof gameStats.$inferSelect;
+
+export type InsertSlotSymbol = z.infer<typeof insertSlotSymbolSchema>;
+export type SlotSymbol = typeof slotSymbols.$inferSelect;
+
+export type InsertSlotPayline = z.infer<typeof insertSlotPaylineSchema>;
+export type SlotPayline = typeof slotPaylines.$inferSelect;
