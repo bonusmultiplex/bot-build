@@ -8,8 +8,13 @@ export function useWebSocket() {
   const { toast } = useToast();
   
   const connectSocket = useCallback(() => {
+    // In development, connect to the replit app's URL with the correct path
+    // This handles the case where Vite runs on a different port than the server
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    const host = window.location.host;
+    const wsUrl = `${protocol}//${host}/ws`;
+    
+    console.log("Attempting to connect to WebSocket at:", wsUrl);
     
     try {
       const socket = new WebSocket(wsUrl);
@@ -36,9 +41,12 @@ export function useWebSocket() {
       
       socket.onerror = (error) => {
         console.error("WebSocket error:", error);
+        // Add more detailed logging
+        console.error("WebSocket readyState:", socket.readyState);
+        
         toast({
           title: "Connection Error",
-          description: "Failed to connect to game server",
+          description: "Failed to connect to game server. See console for details.",
           variant: "destructive",
         });
       };
