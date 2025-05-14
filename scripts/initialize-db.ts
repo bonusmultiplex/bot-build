@@ -91,6 +91,161 @@ async function initializeDatabase() {
     },
   ];
 
+  // Initialize game types
+  const gameTypes = [
+    {
+      name: "blackjack",
+      description: "Classic card game of 21",
+      minBet: 100,
+      maxBet: 100000,
+      odds: 1.5, // 3:2
+      hardModeOdds: 2.0, // 2:1
+      hasHardMode: true,
+      xpReward: 100
+    },
+    {
+      name: "coinflip",
+      description: "50/50 heads or tails",
+      minBet: 100,
+      maxBet: 100000,
+      odds: 1.0, // 1:1
+      hasHardMode: false,
+      xpReward: 100
+    },
+    {
+      name: "crash", 
+      description: "Increasing multiplier until crash",
+      minBet: 100,
+      maxBet: 100000,
+      odds: 1.0, // Variable based on timing
+      hasHardMode: true,
+      xpReward: 100
+    },
+    {
+      name: "slots",
+      description: "Classic slot machine",
+      minBet: 100, 
+      maxBet: 100000,
+      odds: 500.0, // Up to 500:1
+      hasHardMode: false,
+      xpReward: 100
+    },
+    {
+      name: "roulette",
+      description: "Classic casino roulette",
+      minBet: 100,
+      maxBet: 100000,
+      odds: 35.0, // Up to 35:1 for single numbers
+      hasHardMode: false, 
+      xpReward: 100
+    }
+  ];
+
+  // Initialize boosts
+  const boosts = [
+    {
+      name: "XP Boost",
+      description: "Increases XP gained by 50%",
+      type: "xp",
+      multiplier: 1.5,
+      duration: 60, // 1 hour
+      price: 1000,
+    },
+    {
+      name: "Cash Boost",
+      description: "Increases cash rewards by 25%", 
+      type: "cash",
+      multiplier: 1.25,
+      duration: 60,
+      price: 2000,
+    },
+    {
+      name: "Win Rate Boost",
+      description: "Increases win rate by 10%",
+      type: "win_rate", 
+      multiplier: 1.1,
+      duration: 30,
+      price: 5000,
+    }
+  ];
+
+  // Initialize items
+  const shopItems = [
+    {
+      name: "Lucky Coin",
+      description: "Small chance to double winnings",
+      type: "collectible",
+      price: 1000,
+      sellPrice: 500,
+      rarity: "common",
+      imagePath: "/assets/items/lucky_coin.png"
+    },
+    {
+      name: "Experience Scroll",
+      description: "Instantly grants 1000 XP when used",
+      type: "consumable", 
+      price: 2000,
+      sellPrice: 1000,
+      rarity: "rare",
+      imagePath: "/assets/items/xp_scroll.png"
+    },
+    {
+      name: "Golden Ticket",
+      description: "Free entry to any game",
+      type: "consumable",
+      price: 5000,
+      sellPrice: 2500, 
+      rarity: "epic",
+      imagePath: "/assets/items/golden_ticket.png"
+    }
+  ];
+
+  // Initialize command help
+  const commands = [
+    {
+      name: "help",
+      description: "Show help for all available commands",
+      category: "general",
+      aliases: ["h", "wtf"],
+      examples: ["help", "help connectFour", "help c4"]
+    },
+    {
+      name: "donate", 
+      description: "Support the bot's development",
+      category: "general",
+      aliases: [],
+      examples: ["donate", "donate paypal", "donate patreon"]
+    },
+    {
+      name: "deleteMyData",
+      description: "Delete all your data from the bot",
+      category: "account",
+      aliases: [],
+      examples: ["deleteMyData"]
+    },
+    {
+      name: "stats",
+      description: "Show bot statistics and status",
+      category: "general", 
+      aliases: ["ping", "status", "about", "info"],
+      examples: ["stats"]
+    },
+    {
+      name: "invite",
+      description: "Get bot invite link",
+      category: "general",
+      aliases: [],
+      examples: ["invite"]
+    },
+    {
+      name: "support",
+      description: "Join the support server",
+      category: "general",
+      aliases: [],
+      examples: ["support"]
+    }
+  ];
+
   try {
     // Insert symbols
     for (const symbol of symbols) {
@@ -111,6 +266,41 @@ async function initializeDatabase() {
       await db.insert(slotPaylines).values(validatedPayline);
     }
     console.log("Paylines inserted successfully");
+
+    // Insert game types
+    await db.insert(gameTypes).values(gameTypes);
+    console.log("Game types inserted successfully");
+
+    // Insert boosts
+    for (const boost of boosts) {
+      const validatedBoost = insertBoostSchema.parse(boost);
+      await db.insert(boosts).values(validatedBoost);
+    }
+    console.log("Boosts inserted successfully");
+
+    // Insert items
+    for (const item of shopItems) {
+      const validatedItem = insertItemSchema.parse(item);
+      await db.insert(items).values(validatedItem);
+    }
+    console.log("Shop items inserted successfully");
+
+    // Insert commands
+    for (const command of commands) {
+      const validatedCommand = insertCommandHelpSchema.parse(command);
+      await db.insert(commandHelp).values(validatedCommand);
+    }
+    console.log("Commands inserted successfully");
+
+    // Initialize bot stats
+    await db.insert(botStats).values({
+      playerCount: 0,
+      guildCount: 0,
+      activeGames: 0,
+      commandsRun: 0,
+      uptime: 0
+    });
+    console.log("Bot stats initialized successfully");
 
     console.log("Database initialization completed successfully");
   } catch (error) {
