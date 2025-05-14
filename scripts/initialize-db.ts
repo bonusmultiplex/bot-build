@@ -95,6 +95,9 @@ async function initializeDatabase() {
     // Insert symbols
     for (const symbol of symbols) {
       const validatedSymbol = insertSlotSymbolSchema.parse(symbol);
+      if (!db) {
+        throw new Error("Database connection is not initialized.");
+      }
       await db.insert(slotSymbols).values(validatedSymbol);
     }
     console.log("Slot symbols inserted successfully");
@@ -102,6 +105,9 @@ async function initializeDatabase() {
     // Insert paylines
     for (const payline of paylines) {
       const validatedPayline = insertSlotPaylineSchema.parse(payline);
+      if (!db) {
+        throw new Error("Database connection is not initialized.");
+      }
       await db.insert(slotPaylines).values(validatedPayline);
     }
     console.log("Paylines inserted successfully");

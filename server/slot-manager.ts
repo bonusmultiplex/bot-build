@@ -36,6 +36,10 @@ class SlotManager {
   }
   
   private async loadSymbols() {
+    if (!db) {
+        console.warn('Database client is not initialized. Skipping symbol loading.');
+        return;
+    }
     try {
       this.symbols = await db.select().from(slotSymbols);
       console.log(`Loaded ${this.symbols.length} slot symbols`);
